@@ -25,7 +25,7 @@ function Cookie(name, opts) {
 	}
 	
 	this.delete = function(key) {
-		delete that.data[key];
+		delete data[key];
 		this.save();
 	}
 	
