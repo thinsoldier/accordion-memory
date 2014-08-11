@@ -1,3 +1,6 @@
+// 2014-08-11
+// Depends on jquery and cookie.js
+
 var LFJS = {
 
 headerClassSelector: '.section-header',
@@ -9,6 +12,10 @@ init: function()
 {
 	this.sectionHeaders = $( this.headerClassSelector );
 	this.sectionWrappers = $( this.wrapperClassSelector );
+
+	// Create a cookie to store pinned open form section preferences in
+	Cookie.init({name: 'realtycore', expires: 1});
+	if( !Cookie.getData('keepOpen') ) { Cookie.setData('keepOpen',[]) }
 
 	
 	// close all sections initially (unless specified in cookie/storage to stay open)
@@ -25,8 +32,26 @@ init: function()
 // user choice stored in cookie or local storage
 closeUnPinnedSections: function()
 {
+	var cookieData = Cookie.getData('keepOpen');
+	
+	
 	//console.log(this);
-	this.sectionWrappers.hide();
+	this.sectionWrappers.each( function( index, node )
+		{
+			// if sections node.id is Not found in cookie, hide section
+			if( cookieData.indexOf( node.id ) < 0 )
+			{	node.style.display="none";	}
+			// if it is found, change class of section-pin element to indicate it's pinned open
+			else 
+			{
+				// find this sections wrappers section-header & section-pin
+				var header = node.previous();
+				var pin = header.down('.section-pin');
+				// change section pin class name
+				pin.toggleClassName('pinned');
+				// console.log( pin )
+			}
+		} );
 },
 
 

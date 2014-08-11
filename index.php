@@ -43,7 +43,12 @@
 	
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	
+	<!-- for saving keep-open panel preferences in cookie -->
+	<script src="cookie.js" type="text/javascript"></script>
+	
 	<script src="listingform-accordion.js"></script>
+	
 	<script>
 		$(document).ready( function(){ LFJS.init(); } );
 	</script>
