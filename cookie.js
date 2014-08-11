@@ -1,84 +1,88 @@
-/*
-http://jason.pureconcepts.net/articles/javascript_cookie_object
-JavaScript Cookie Object using Prototype
+function Cookie(name, opts) {
+	if (!name || typeof name != 'string') {
+		throw 'Cookie name must be a valid string: ' + name + ' (' + typeof name + ') given.';
+	}
 
-Example Usage
+	this.name = name;
 
-Currently, the Cookie class only handles a single named cookie. This is acceptable since you can store multiple variables in a single cookie. However, I want to refactor this class from a Singleton to a Factory. Look for that in the future. In the meantime, here are some current sample uses:
+	var data = find() || {};
+	
+	var options = {};
+	opts = opts || {};
+	options.expires = opts.expires || null;
+	options.domain = opts.domain || null;
+	options.path = opts.path || null;
+	options.secure = opts.secure || false;
 
-Cookie that expires 90 days from visit, and sets a value:
+	// public
+	this.get = function(key) {
+		return data[key];
+	}
 
-    Cookie.init({name: 'yourdata', expires: 90});
-    Cookie.setData('favorites', false);
+	this.set = function(key, value) {
+		data[key] = value;
+		this.save();
+	}
+	
+	this.delete = function(key) {
+		delete that.data[key];
+		this.save();
+	}
+	
+	this.save = function() {
+		document.cookie = this.name + '=' + escape(JSON.stringify(data)) + getOptions();
+	}
+	
+	this.destroy = function() {
+		document.cookie = this.name + '=' + getOptions(false) + ';expires=Thu, 01 Jan 1970 00:00:00 GMT;max-age:0';
+	}
+	
+	// private
+	function find() {
+		var start = document.cookie.indexOf(name + "=");
 
-Cookie that only lasts the session, with default data:
+		if (start == -1) {
+			return null;
+		}
 
-    Cookie.init({name: 'mydata'}, {foo: 'bar', x: 0});
-    alert(Cookie.getData('foo'));
+		if (name != document.cookie.substr(start, name.length)) {
+			return null;
+		}
 
-*/
+		var len = start + name.length + 1;
+		var end = document.cookie.indexOf(';', len);
 
+		if (end == -1) {
+			end = document.cookie.length;
+		}
 
-var Cookie = {
-  data: {},
-  options: {expires: 1, domain: "", path: "", secure: false},
+		return JSON.parse(unescape(document.cookie.substring(len, end)));
+	}
+	
+	function getOptions(include_expires) {
+		include_expires = include_expires !== false;
+		
+		var opts = []; 
 
-init: function(options, data) {
-  Cookie.options = Object.extend(Cookie.options, options || {});
+		for (key in options) {
+			if (options[key]) {
+				if (key == 'expires') {
+					if (include_expires) {
+						var today = new Date();
+						var ttl = options.expires * 86400000;
+						opts.push('expires=' + new Date(today.getTime() + ttl).toUTCString());
+						opts.push('max-age=' + ttl/1000);
+					}
+				}
+				else if (key == 'secure') {
+					opts.push('secure');
+				}
+				else {
+					opts.push(key + '=' + options[key]);
+				}
+			}
+		}
 
-  var payload = Cookie.retrieve();
-        if(payload) {
-            Cookie.data = payload.evalJSON();
-        }
-        else {
-            Cookie.data = data || {};
-        }
-        Cookie.store();
-    },
-    getData: function(key) {
-        return Cookie.data[key];
-    },
-    setData: function(key, value) {
-        Cookie.data[key] = value;
-        Cookie.store();
-    },
-    removeData: function(key) {
-        delete Cookie.data[key];
-        Cookie.store();
-    },
-    retrieve: function() {
-        var start = document.cookie.indexOf(Cookie.options.name + "=");
-
-        if(start == -1) {
-            return null;
-        }
-        if(Cookie.options.name != document.cookie.substr(start, Cookie.options.name.length)) {
-            return null;
-        }
-
-        var len = start + Cookie.options.name.length + 1;   
-        var end = document.cookie.indexOf(';', len);
-
-        if(end == -1) {
-            end = document.cookie.length;
-        } 
-        return unescape(document.cookie.substring(len, end));
-    },
-    store: function() {
-        var expires = '';
-
-        if (Cookie.options.expires) {
-            var today = new Date();
-            expires = Cookie.options.expires * 86400000;
-            expires = ';expires=' + new Date(today.getTime() + expires);
-        }
-
-        document.cookie = Cookie.options.name + '=' + escape(Object.toJSON(Cookie.data)) + Cookie.getOptions() + expires;
-    },
-    erase: function() {
-        document.cookie = Cookie.options.name + '=' + Cookie.getOptions() + ';expires=Thu, 01-Jan-1970 00:00:01 GMT';
-    },
-    getOptions: function() {
-        return (Cookie.options.path ? ';path=' + Cookie.options.path : '') + (Cookie.options.domain ? ';domain=' + Cookie.options.domain : '') + (Cookie.options.secure ? ';secure' : '');      
-    }
-};
+		return opts.length ? ';' + opts.join(';') : '';
+	}
+}
