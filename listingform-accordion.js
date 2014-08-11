@@ -13,9 +13,9 @@ init: function()
 	this.sectionHeaders = $( this.headerClassSelector );
 	this.sectionWrappers = $( this.wrapperClassSelector );
 
-	// Create a cookie to store pinned open form section preferences in
-	Cookie.init({name: 'realtycore', expires: 1});
-	if( !Cookie.getData('keepOpen') ) { Cookie.setData('keepOpen',[]) }
+	// Create a cookie to store pinned open form section preferences in an array
+	this.cookie = new Cookie('realtycore', {expires: 1} );
+	if( !this.cookie.get('keepOpen') ) { this.cookie.set('keepOpen',[]); }
 
 	
 	// close all sections initially (unless specified in cookie/storage to stay open)
@@ -25,6 +25,8 @@ init: function()
 
 	// watch all section headers for clicks
 	this.watchSectionHeaders();
+	
+	this.watchSectionPins();
 },
 
 
@@ -32,12 +34,13 @@ init: function()
 // user choice stored in cookie or local storage
 closeUnPinnedSections: function()
 {
-	var cookieData = Cookie.getData('keepOpen');
+	var cookieData = this.cookie.get('keepOpen');
 	
 	
 	//console.log(this);
 	this.sectionWrappers.each( function( index, node )
 		{
+			$node = $(node);
 			// if sections node.id is Not found in cookie, hide section
 			if( cookieData.indexOf( node.id ) < 0 )
 			{	node.style.display="none";	}
@@ -45,11 +48,10 @@ closeUnPinnedSections: function()
 			else 
 			{
 				// find this sections wrappers section-header & section-pin
-				var header = node.previous();
-				var pin = header.down('.section-pin');
+				var header = $node.prev();
+				var pin = header.find('.section-pin');
 				// change section pin class name
-				pin.toggleClassName('pinned');
-				// console.log( pin )
+				pin.toggleClass('pinned');
 			}
 		} );
 },
@@ -75,6 +77,20 @@ watchSectionHeaders: function()
 		}
 	)
 },
+
+watchSectionPins: function()
+{
+	var api = this;
+
+	$('.section-pin').click( 
+		function(clickevent)
+		{
+			api.storeSectionPref( clickevent.target );
+		}
+	)
+},
+
+
 
 
 toggleSection: function( header )
@@ -114,6 +130,45 @@ collapseAllSections: function ()
 expandAllSections: function ()
 {
 	this.sectionWrappers.slideDown();
-}
+},
+
+
+storeSectionPref: function( element )
+{
+	$element = $(element);
+	// if text of element at time of clicking said "keep open"
+	// then keep it open
+	var text = $element.text();
+	//console.log(text);
+	
+	var section = $element.parent().next('.section-wrapper');
+	//console.log(section);
+	
+	var cookieData = this.cookie.get('keepOpen');
+	//console.log(cookieData);
+	
+	// if element does not already have classname "pinned", add its section id to list of keepOpen sections in cookie
+	if( $element.hasClass('pinned') == false )
+	{
+		if(cookieData.indexOf( section[0].id ) < 0 ) { cookieData.push( section[0].id ) }
+	}
+	// if element already has the classname 'pinned' remove its section id from list of keepOpen sections in cookie
+	else {
+		var find = cookieData.indexOf( section[0].id );
+		cookieData.splice( find, 1 ); // delete it from array
+	}
+	
+	// Inspect newest cookie data based changes that may have happened above.
+	console.log(cookieData);
+	
+	// The pinned class is toggled every time a pin is clicked.
+	$element.toggleClass('pinned')
+	
+	// Replace keepOpen array in cookie with latest info.
+	this.cookie.set('keepOpen', cookieData);
+
+},
+
+
 
 } // end LFJS app object wrapper

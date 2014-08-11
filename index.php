@@ -26,8 +26,14 @@
 	height: 20px;
 	background: #ccc;
 	vertical-align: bottom;
-	border-radius: 10px;
+	border-radius: 100%;
+	box-sizing: border-box;
 	}
+	
+	.section-pin.pinned {
+		border: 2px solid black;
+	}
+	
 	.section-wrapper {
 	background: #fff;
 	margin-bottom: 2em;
