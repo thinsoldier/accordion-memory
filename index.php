@@ -65,6 +65,8 @@ init: function()
 	// close all sections initially (unless specified in cookie/storage to stay open)
 	this.closeUnPinnedSections();
 
+	this.watchToggleAll();
+
 	// watch all section headers for clicks
 	this.watchSectionHeaders();
 },
@@ -76,6 +78,14 @@ closeUnPinnedSections: function()
 {
 	//console.log(this);
 	$( this.wrapperClassSelector ).hide();
+},
+
+
+// observe the expand/collapse all button
+watchToggleAll: function()
+{
+	var api = this;
+	$('#toggleAll').click( function(clik){ api.toggleAllSections(clik); } );
 },
 
 
@@ -144,8 +154,11 @@ expandAllSections: function ()
 
 
 
+<p id="toggleAll"> <span class="button">Expand / Collapse All</span></p>
 
-
+<p onclick="LFJS.toggleSection($('.section-header').first())"> toggle first </p>
+<p onclick="LFJS.toggleSection($('.section-header').last())"> toggle last </p>
+<p onclick="LFJS.toggleSection($('.section-header').eq(5))"> toggle youtube </p>
 
 <h2 class="section-header">Listing Details <span title="Click here to have this section automatically open on every page load" class="section-pin">Keep Open</span></h2>
 <div id="sectDetails" class="section-wrapper">
