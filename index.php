@@ -51,8 +51,6 @@ $(document).ready( function(){
 
 var LFJS = {
 
-foo: 'bar',
-that: this,
 headerClassSelector: '.section-header',
 wrapperClassSelector: '.section-wrapper',
 sectionHeaders: [],
@@ -84,14 +82,12 @@ closeUnPinnedSections: function()
 
 watchSectionHeaders: function()
 {
+	var api = this;
+
 	this.sectionHeaders.click(
 		function(clickevent)
 		{
-			ele = clickevent.target;
-			// find next sibling that wraps the form fields and expand it
-			var wrapper = $(ele).next('.section-wrapper');
-			wrapper.slideToggle("0.1");
-			//that.toggleSection( ele );
+			api.toggleSection( clickevent.target );
 		}
 	)
 },
@@ -99,10 +95,9 @@ watchSectionHeaders: function()
 
 toggleSection: function( header )
 {
+	// find next sibling that wraps the form fields and expand it
 	var wrapper = $(header).next('.section-wrapper');
-	console.log( 'header', header );
-	console.log( 'wrapper',  wrapper );
-
+	wrapper.slideToggle("0.1");
 }, 
 
 
