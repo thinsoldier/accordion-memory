@@ -1,10 +1,4 @@
-<?
-/*
-2012-10-05 
-Trying to isolate the code I used for the expanding/collapsing listing form area on BRL.
-And turn it into a reusable javascript object.
-*/
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
@@ -61,10 +55,15 @@ foo: 'bar',
 that: this,
 headerClassSelector: '.section-header',
 wrapperClassSelector: '.section-wrapper',
-
+sectionHeaders: [],
+sectionWrappers: [],
 
 init: function()
 {
+	this.sectionHeaders = $( this.headerClassSelector );
+	this.sectionWrappers = $( this.wrapperClassSelector );
+
+	
 	// close all sections initially (unless specified in cookie/storage to stay open)
 	this.closeUnPinnedSections();
 
@@ -77,7 +76,7 @@ init: function()
 // user choice stored in cookie or local storage
 closeUnPinnedSections: function()
 {
-	console.log(this);
+	//console.log(this);
 	$( this.wrapperClassSelector ).hide();
 },
 
@@ -85,31 +84,26 @@ closeUnPinnedSections: function()
 
 watchSectionHeaders: function()
 {
-	this.allSectionHeaders().click(
+	this.sectionHeaders.click(
 		function(clickevent)
 		{
 			ele = clickevent.target;
 			// find next sibling that wraps the form fields and expand it
 			var wrapper = $(ele).next('.section-wrapper');
 			wrapper.slideToggle("0.1");
+			//that.toggleSection( ele );
 		}
 	)
 },
 
 
-
-
-allSectionHeaders: function()
+toggleSection: function( header )
 {
-	return $( this.headerClassSelector );
-},
+	var wrapper = $(header).next('.section-wrapper');
+	console.log( 'header', header );
+	console.log( 'wrapper',  wrapper );
 
-allSectionWrappers: function()
-{
-	return $( this.wrapperClassSelector );
-},
-
-
+}, 
 
 
 toggleAllSections: function (clickevent)
@@ -117,7 +111,7 @@ toggleAllSections: function (clickevent)
 	if( typeof allToggleState === 'undefined' )
 	{
 		// base initial toggle state on whatever the first section is doing
-		var wrappers = this.allSectionWrappers();
+		var wrappers = this.sectionWrappers;
 		if(wrappers[0].style.display === '' )
 		{ allToggleState = 'openstate'; }  //open
 		else { allToggleState = 'closedstate'; } //close
@@ -133,14 +127,14 @@ toggleAllSections: function (clickevent)
 // forces all sections to close
 collapseAllSections: function ()
 {
-	this.allSectionWrappers().slideUp();
+	this.sectionWrappers.slideUp();
 },
 
 
 // forces all sections to open
 expandAllSections: function ()
 {
-	this.allSectionWrappers().slideDown();
+	this.sectionWrappers.slideDown();
 }
 
 } // end LFJS app object wrapper
