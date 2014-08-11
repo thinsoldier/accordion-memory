@@ -14,7 +14,7 @@ init: function()
 	this.sectionWrappers = $( this.wrapperClassSelector );
 
 	// Create a cookie to store pinned open form section preferences in an array
-	this.cookie = new Cookie('realtycore', {expires: 1} );
+	this.cookie = new Cookie('realtycore', {expires: 5} );
 	if( !this.cookie.get('keepOpen') ) { this.cookie.set('keepOpen',[]); }
 
 	
