@@ -77,7 +77,7 @@ init: function()
 closeUnPinnedSections: function()
 {
 	//console.log(this);
-	$( this.wrapperClassSelector ).hide();
+	this.sectionWrappers.hide();
 },
 
 
