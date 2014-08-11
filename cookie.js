@@ -1,3 +1,8 @@
+// https://github.com/jasonmccreary/javascript-cookie-object
+// https://github.com/jasonmccreary/javascript-cookie-object/tree/45f57240dc6d3c54620c2129a308ddc54cdad7b4
+// http://jason.pureconcepts.net/2008/10/javascript_cookie_object/
+
+
 function Cookie(name, opts) {
 	if (!name || typeof name != 'string') {
 		throw 'Cookie name must be a valid string: ' + name + ' (' + typeof name + ') given.';
