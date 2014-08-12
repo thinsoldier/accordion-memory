@@ -56,7 +56,7 @@
 	<script src="listingform-accordion.js"></script>
 	
 	<script>
-		$(document).ready( function(){ LFJS.init(); } );
+		$(document).ready( function(){ window.accordion = new AccordionMemory(); } );
 	</script>
 
 </head>
@@ -66,9 +66,9 @@
 
 <p id="toggleAll"> <span class="button">Expand / Collapse All</span></p>
 
-<p onclick="LFJS.toggleSection($('.section-header').first())"> toggle first </p>
-<p onclick="LFJS.toggleSection($('.section-header').last())"> toggle last </p>
-<p onclick="LFJS.toggleSection($('.section-header').eq(5))"> toggle youtube </p>
+<p onclick="accordion.toggleSection($('.section-header').first())"> toggle first </p>
+<p onclick="accordion.toggleSection($('.section-header').last())"> toggle last </p>
+<p onclick="accordion.toggleSection($('.section-header').eq(5))"> toggle youtube </p>
 
 <h2 class="section-header">Listing Details <span title="Click here to have this section automatically open on every page load" class="section-pin">Keep Open</span></h2>
 <div id="sectDetails" class="section-wrapper">

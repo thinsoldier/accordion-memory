@@ -1,38 +1,40 @@
 // 2014-08-11
 // Depends on jquery and cookie.js
 
-var LFJS = {
-
-headerClassSelector: '.section-header',
-wrapperClassSelector: '.section-wrapper',
-sectionHeaders: [],
-sectionWrappers: [],
-
-init: function()
+function AccordionMemory( opts )
 {
-	this.sectionHeaders = $( this.headerClassSelector );
-	this.sectionWrappers = $( this.wrapperClassSelector );
 
-	// Create a cookie to store pinned open form section preferences in an array
-	this.cookie = new Cookie('realtycore', {expires: 5} );
-	if( !this.cookie.get('keepOpen') ) { this.cookie.set('keepOpen',[]); }
+this.headerClassSelector = '.section-header';
+this.wrapperClassSelector = '.section-wrapper';
+this.sectionHeaders = [];
+this.sectionWrappers = [];
 
-	
-	// close all sections initially (unless specified in cookie/storage to stay open)
-	this.closeUnPinnedSections();
+this.sectionHeaders = $( this.headerClassSelector );
+this.sectionWrappers = $( this.wrapperClassSelector );
 
-	this.watchToggleAll();
+// Create a cookie to store pinned open form section preferences in an array
+this.cookie = new Cookie('realtycore', {expires: 5} );
+if( !this.cookie.get('keepOpen') ) { this.cookie.set('keepOpen',[]); }
 
-	// watch all section headers for clicks
-	this.watchSectionHeaders();
-	
-	this.watchSectionPins();
-},
+	this.construct = function()
+	{
+		// close all sections initially (unless specified in cookie/storage to stay open)
+		this.closeUnPinnedSections();
+
+		this.watchToggleAll();
+
+		// watch all section headers for clicks
+		this.watchSectionHeaders();
+
+		this.watchSectionPins();
+	};
+
+
 
 
 // Closes form sections EXCEPT those the user wants to keep open all the time
 // user choice stored in cookie or local storage
-closeUnPinnedSections: function()
+this.closeUnPinnedSections = function()
 {
 	var cookieData = this.cookie.get('keepOpen');
 	
@@ -54,19 +56,18 @@ closeUnPinnedSections: function()
 				pin.toggleClass('pinned');
 			}
 		} );
-},
+}
 
 
 // observe the expand/collapse all button
-watchToggleAll: function()
+this.watchToggleAll = function()
 {
 	var api = this;
 	$('#toggleAll').click( function(clik){ api.toggleAllSections(clik); } );
-},
+}
 
 
-
-watchSectionHeaders: function()
+this.watchSectionHeaders = function()
 {
 	var api = this;
 
@@ -76,9 +77,9 @@ watchSectionHeaders: function()
 			api.toggleSection( clickevent.target );
 		}
 	)
-},
+}
 
-watchSectionPins: function()
+this.watchSectionPins = function()
 {
 	var api = this;
 
@@ -88,20 +89,16 @@ watchSectionPins: function()
 			api.storeSectionPref( clickevent.target );
 		}
 	)
-},
+}
 
-
-
-
-toggleSection: function( header )
+this.toggleSection = function( header )
 {
 	// find next sibling that wraps the form fields and expand it
 	var wrapper = $(header).next('.section-wrapper');
 	wrapper.slideToggle("0.1");
-}, 
+}
 
-
-toggleAllSections: function (clickevent)
+this.toggleAllSections = function (clickevent)
 {
 	if( typeof allToggleState === 'undefined' )
 	{
@@ -115,25 +112,24 @@ toggleAllSections: function (clickevent)
 	if( allToggleState === 'closedstate' )
 	{ this.expandAllSections(); allToggleState = 'openstate'; } 
 	else { this.collapseAllSections(); allToggleState = 'closedstate'; }
-},
-
+}
 
 
 // forces all sections to close
-collapseAllSections: function ()
+this.collapseAllSections = function ()
 {
 	this.sectionWrappers.slideUp();
-},
+}
 
 
 // forces all sections to open
-expandAllSections: function ()
+this.expandAllSections = function ()
 {
 	this.sectionWrappers.slideDown();
-},
+}
 
 
-storeSectionPref: function( element )
+this.storeSectionPref = function( element )
 {
 	$element = $(element);
 	// if text of element at time of clicking said "keep open"
@@ -167,8 +163,15 @@ storeSectionPref: function( element )
 	// Replace keepOpen array in cookie with latest info.
 	this.cookie.set('keepOpen', cookieData);
 
-},
+}
+
+
+	this.construct();
+
+}  // end LFJS app object wrapper
 
 
 
-} // end LFJS app object wrapper
+
+
+
