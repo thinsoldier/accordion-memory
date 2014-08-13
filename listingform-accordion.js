@@ -4,6 +4,8 @@
 function AccordionMemory( opts )
 {
 
+var $ = jQuery;
+
 this.headerClassSelector = '.section-header';
 this.wrapperClassSelector = '.section-wrapper';
 this.sectionHeaders = [];
