@@ -129,6 +129,12 @@ section 7
 section 8
 </div>
 
+<pre>
+$_COOKIE contents:
+<? print_r($_COOKIE) ?>
+</pre>
+
+
 </body>
 
 </html>
