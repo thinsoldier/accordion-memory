@@ -11,6 +11,7 @@ function Cookie(name, opts) {
 	this.name = name;
 
 	var data = find() || {};
+	this.data = data;
 	
 	var options = {};
 	opts = opts || {};
